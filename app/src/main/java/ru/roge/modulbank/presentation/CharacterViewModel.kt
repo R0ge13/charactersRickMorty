@@ -13,38 +13,14 @@ import ru.roge.modulbank.utill.BaseViewModel
 
 class CharacterViewModel : BaseViewModel() {
 
-
-
-    private val getSingleCharacterRepository: GetSingleCharacterRepository by inject()
-
-    private val pager: Pager<Int,ResultCharactersEntity> by inject()
-
-    //private val _detailCharactersList: MutableStateFlow<?> = MutableStateFlow(null)
-   // val detailCharactersList = _detailCharactersList.asStateFlow()
-
+    private val pager: Pager<Int, ResultCharactersEntity> by inject()
 
     val charactersPagingFlow = pager
         .flow
-        .map { pagingData->
+        .map { pagingData ->
             pagingData.map {
                 it
             }
         }.cachedIn(viewModelScope)
-//    fun getCharactersPagination(): Flow<PagingData<ResultCharacter>> {
-//        return Pager(
-//            PagingConfig(
-//                pageSize = 5,
-//                enablePlaceholders = true
-//            )
-//        ) {
-//            CharactersSource(getCharactersRepository)
-//        }.flow
-//    }
-
-    fun getDetailInfoAboutCharacter(id: Int) {
-        viewModelScope.launch {
-     //       _detailCharactersList.value = getSingleCharacterRepository.getCharacter(id).data?.toDetailCharacter()
-        }
-    }
 
 }
