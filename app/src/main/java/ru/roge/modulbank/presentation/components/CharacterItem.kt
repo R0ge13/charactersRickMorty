@@ -5,6 +5,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,75 +32,89 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import ru.roge.modulbank.data.local.ResultCharactersEntity
 import ru.roge.modulbank.domain.models.ResultCharacter
 
 @Composable
 fun CharacterItem(
-    character: ResultCharacter,
+    character: ResultCharactersEntity,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
 ) {
     Column(
         modifier = modifier
             .padding(8.dp)
-            .height(200.dp)
-            .width(130.dp)
+            .fillMaxWidth()
             .clip(RoundedCornerShape(30.dp))
             .background(Color.DarkGray)
-            .clickable(onClick = onClick)
             .padding(8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+
 
     ) {
-
-        SubcomposeAsyncImage(
-            model = character.image,
-            contentDescription = character.name,
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-                .size(100.dp)
-                .clip(CircleShape)
-                .border(2.dp, Color.White, CircleShape),
-            contentScale = ContentScale.Crop
+        Row(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            when (painter.state) {
-                AsyncImagePainter.State.Empty -> {
-                    HelpIcon(icon = Icons.Rounded.Person)
-                }
+            SubcomposeAsyncImage(
+                model = character.image,
+                contentDescription = character.name,
+                modifier = Modifier
+                    .size(150.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, Color.White, CircleShape),
+                contentScale = ContentScale.Crop
+            ) {
+                when (painter.state) {
+                    AsyncImagePainter.State.Empty -> {
+                        HelpIcon(icon = Icons.Rounded.Person)
+                    }
 
-                is AsyncImagePainter.State.Error -> {
-                    HelpIcon(
-                        icon = Icons.Rounded.Info,
-                        tint = Color.Red
-                    )
-                }
+                    is AsyncImagePainter.State.Error -> {
+                        HelpIcon(
+                            icon = Icons.Rounded.Info,
+                            tint = Color.Red
+                        )
+                    }
 
-                is AsyncImagePainter.State.Loading -> {
-                    CircularProgressIndicator(
-                        color = Color.Gray
-                    )
-                }
+                    is AsyncImagePainter.State.Loading -> {
+                        CircularProgressIndicator(
+                            color = Color.Gray
+                        )
+                    }
 
-                is AsyncImagePainter.State.Success -> {
-                    SubcomposeAsyncImageContent()
+                    is AsyncImagePainter.State.Success -> {
+                        SubcomposeAsyncImageContent()
+                    }
                 }
             }
+            Column(
+                modifier = Modifier.padding(start = 16.dp)
+            ) {
+                Text(
+                    text = character.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.White
+                )
+                Text(
+                    text = character.status,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.LightGray,
+                )
+                Text(
+                    text = "Name: ${character.name}",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = "Status: ${character.status}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(text = "Created: ${character.created}")
+                Text(text = "Gender: ${character.gender}")
+                Text(text = "Spices: ${character.species}")
+                Text(text = "Type: ${character.type}")
+            }
         }
-
-        Text(
-            text = character.name,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            color = Color.White
-        )
-        Text(
-            text = character.status,
-            style = MaterialTheme.typography.bodySmall,
-            color = Color.LightGray,
-        )
     }
 }
 

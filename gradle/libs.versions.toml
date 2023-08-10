@@ -6,6 +6,9 @@ coilVersion = "2.2.2"
 
 pagging = "3.2.0"
 
+
+room = "2.5.1"
+
 [libraries]
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
@@ -22,8 +25,15 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilVersion" }
 
+pagging-runtime = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagging" }
 pagging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagging" }
+
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room"}
+room-pagging = { module = "androidx.room:room-paging", version.ref = "room"}
+room-coroutines = { module = "androidx.room:room-coroutines", version.ref = "room" }
 
 [bundles]
 ktorCore = ["ktor-client-core", "ktor-client-android", "ktor-client-logging", "ktor-client-negotation", "ktor-client-json", "ktor-client-serialization"]
 koinCore = ["koin-android","koin-android-compose"]
+paggingCore = ["pagging-compose","pagging-runtime"]

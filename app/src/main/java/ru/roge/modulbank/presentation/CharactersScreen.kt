@@ -1,132 +1,60 @@
 package ru.roge.modulbank.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
-import kotlinx.coroutines.launch
-import ru.roge.modulbank.R
+import androidx.paging.compose.LazyPagingItems
+import ru.roge.modulbank.data.local.ResultCharactersEntity
 import ru.roge.modulbank.presentation.components.CharacterItem
-import ru.roge.modulbank.presentation.components.ErrorView
-import java.net.UnknownHostException
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CharactersScreen(viewModel: CharacterViewModel) {
+fun CharactersScreen(characters: LazyPagingItems<ResultCharactersEntity>) {
 
-    val characters = viewModel.getCharactersPagination().collectAsLazyPagingItems()
-    val detailCharacter = viewModel.detailCharactersList.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
-    val bottomSheetState =
-        rememberModalBottomSheetState(
-            initialValue = ModalBottomSheetValue.Hidden,
-            skipHalfExpanded = true
-        )
+    val context = LocalContext.current
+    LaunchedEffect(key1 = characters.loadState) {
+        if (characters.loadState.refresh is LoadState.Error) {
+            Toast.makeText(
+                context,
+                "Error: " + (characters.loadState.refresh as LoadState.Error).error.message,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
 
-
-    ModalBottomSheetLayout(
-        sheetContent = {
-            DetailScreen(
-                characterDetails = detailCharacter.value
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (characters.loadState.refresh is LoadState.Loading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
             )
-        },
-        sheetState = bottomSheetState,
-        sheetBackgroundColor = Color.DarkGray,
-        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-    ) {
-        Column {
-            Text(
-                text = "Characters",
-                color = Color.LightGray,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 130.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalArrangement = Arrangement.Center
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (characters.loadState.refresh == LoadState.Loading) {
-                    item {
-                        Text(
-                            text = stringResource(id = R.string.loading_data),
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                }
-                items(
-                    count = characters.itemCount,
-                ) { index ->
-
+                items(characters.itemCount) { index ->
                     val item = characters[index]
                     item?.let {
-                        CharacterItem(it) {
-                            viewModel.getDetailInfoAboutCharacter(it.id)
-                            coroutineScope.launch {
-                                if (bottomSheetState.isVisible) {
-                                    bottomSheetState.hide()
-                                } else {
-                                    bottomSheetState.show()
-                                }
-                            }
-
-                        }
-                    }
-                }
-                if (characters.loadState.append == LoadState.Loading) {
-                    item {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentWidth(Alignment.CenterHorizontally)
+                        CharacterItem(
+                            character = it
                         )
                     }
                 }
-                characters.apply {
-                    when {
-                        loadState.refresh is LoadState.Error -> {
-                            val e = loadState.refresh as LoadState.Error
-                            if (e.error is UnknownHostException) {
-                                item {
-                                    ErrorView()
-                                }
-                            }
-                        }
-
-                        loadState.append is LoadState.Error -> {
-                            val e = loadState.refresh as LoadState.Error
-                            if (e.error is UnknownHostException) {
-                                item {
-                                    ErrorView()
-                                }
-                            }
-                        }
+                item {
+                    if (characters.loadState.append is LoadState.Loading) {
+                        CircularProgressIndicator()
                     }
                 }
             }

@@ -17,11 +17,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
-import ru.roge.modulbank.domain.models.CharacterDetails
+import ru.roge.modulbank.data.local.ResultCharactersEntity
 
 @Composable
 fun DetailScreen(
-    characterDetails: CharacterDetails?
+    characterDetails: ResultCharactersEntity?
 ) {
 
     Column(
