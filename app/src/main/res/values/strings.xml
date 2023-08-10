@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">modulBank</string>
+    <string name="characters_screen">Characters</string>
+    <string name="error_internet_turned_off">Отсутствует подключение с интернетом</string>
+    <string name="check_internet_connection">Проверьте соединение с интернетом</string>
+    <string name="error_http">Что-то пошло не так. Повторите позже</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="loading_data">Данные загружаются</string>
+</resources>

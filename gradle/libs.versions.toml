@@ -1,0 +1,29 @@
+[versions]
+ktorVersion = "2.3.3"
+koinVersion = "3.2.0"
+kotlinxSreializationVersion = "1.5.1"
+coilVersion = "2.2.2"
+
+pagging = "3.2.0"
+
+[libraries]
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorVersion" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorVersion" }
+ktor-client-negotation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
+ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktorVersion" }
+ktor-client-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
+
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinVersion" }
+koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinVersion" }
+
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSreializationVersion" }
+
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilVersion" }
+
+pagging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagging" }
+
+[bundles]
+ktorCore = ["ktor-client-core", "ktor-client-android", "ktor-client-logging", "ktor-client-negotation", "ktor-client-json", "ktor-client-serialization"]
+koinCore = ["koin-android","koin-android-compose"]
